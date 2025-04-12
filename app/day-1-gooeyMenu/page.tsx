@@ -4,7 +4,6 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Home, Mail, Menu, Settings, User, X } from "lucide-react";
 import { GooeyMenu } from "../components/gooeyMenu";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 // Define menu options
