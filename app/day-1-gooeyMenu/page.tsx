@@ -4,19 +4,29 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Home, Mail, Menu, Settings, User, X } from "lucide-react";
 import { GooeyMenu } from "../components/gooeyMenu";
+import { useRouter } from "next/navigation";
 
 // Define menu options
 const navigationItems = [
-  { icon: Home, label: "Home" },
-  { icon: Mail, label: "Contact" },
-  { icon: User, label: "Profile" },
-  { icon: Settings, label: "Settings" },
+  { icon: Home, label: "Home", href: "/" },
+  { icon: Mail, label: "Contact", href: "#contact" },
+  { icon: User, label: "Profile", href: "#profile" },
+  { icon: Settings, label: "Settings", href: "#settings" },
 ];
 
 export default function GooeyDemo() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
 
   const handleToggleMenu = () => setMenuOpen(!menuOpen);
+
+  const handleItemClick = (href: string) => {
+    setMenuOpen(false);
+    // Wait for animation to complete before navigating
+    setTimeout(() => {
+      router.push(href);
+    }, 300);
+  };
 
   const itemAnimationConfig = {
     initial: { x: 0, opacity: 0 },
@@ -53,7 +63,7 @@ export default function GooeyDemo() {
               return (
                 <motion.button
                   key={item.label}
-                  className="absolute w-12 h-12 bg-[#efefef] rounded-full flex items-center justify-center"
+                  className="absolute w-12 h-12 bg-[#efefef] rounded-full flex items-center justify-center cursor-pointer"
                   initial={itemAnimationConfig.initial}
                   animate={{
                     y: (idx + 1) * 44,
@@ -61,6 +71,7 @@ export default function GooeyDemo() {
                   }}
                   exit={itemAnimationConfig.exit(idx)}
                   transition={itemAnimationConfig.transition(idx)}
+                  onClick={() => handleItemClick(item.href)}
                 >
                   <AnimatePresence mode="wait">
                     <motion.div
@@ -76,6 +87,7 @@ export default function GooeyDemo() {
                       }}
                     >
                       <IconComponent className="w-5 h-5 text-gray-500 hover:text-black" />
+                      <span className="sr-only">{item.label}</span>
                     </motion.div>
                   </AnimatePresence>
                 </motion.button>
