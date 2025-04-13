@@ -26,7 +26,7 @@ const statusData = {
     text: "Transaction Safe",
     textColor: "rgb(34 197 94)", // green-500
     iconColor: "rgb(34 197 94)", // green-500
-    bgColor: "rgb(240 253 244)", // green-50
+    bgColor: "rgb(220 252 231)", // green-100
   },
   warning: {
     text: "Transaction Warning",
@@ -40,6 +40,12 @@ const StatusIndicator = () => {
   const [status, setStatus] = useState<StatusType>("analyzing");
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
+  // Add state for tracking text width
+  const [textWidth, setTextWidth] = useState<Record<StatusType, number>>({
+    analyzing: 0,
+    safe: 0,
+    warning: 0,
+  });
 
   // Simple cycling through the sequence
   useEffect(() => {
@@ -66,7 +72,38 @@ const StatusIndicator = () => {
     return () => clearInterval(timer);
   }, [index, status]);
 
-  // Animation variants for text only
+  // Effect to measure text widths
+  useEffect(() => {
+    const measureTextWidth = (text: string, font: string): number => {
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      if (context) {
+        context.font = font;
+        const metrics = context.measureText(text);
+        return metrics.width;
+      }
+      return 0;
+    };
+
+    const newWidths: Record<StatusType, number> = {
+      analyzing: measureTextWidth(
+        "Analyzing Transaction",
+        "500 18px -apple-system, BlinkMacSystemFont, sans-serif"
+      ),
+      safe: measureTextWidth(
+        "Transaction Safe",
+        "500 18px -apple-system, BlinkMacSystemFont, sans-serif"
+      ),
+      warning: measureTextWidth(
+        "Transaction Warning",
+        "500 18px -apple-system, BlinkMacSystemFont, sans-serif"
+      ),
+    };
+
+    setTextWidth(newWidths);
+  }, []);
+
+  // Animation variants for text with bouncy effect
   const textVariants = {
     hiddenForward: { x: 30, opacity: 0 },
     hiddenBackward: { x: -30, opacity: 0 },
@@ -82,11 +119,33 @@ const StatusIndicator = () => {
         return (
           <motion.div
             key="loader"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="w-6 h-6"
+            initial={{
+              opacity: 0,
+              scale: 0.5,
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.5,
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+            transition={{
+              duration: 0.05,
+              opacity: { duration: 0.15 },
+              scale: { duration: 0.15 },
+            }}
+            className="w-full h-6"
           >
             <motion.svg
               width="24"
@@ -114,11 +173,33 @@ const StatusIndicator = () => {
         return (
           <motion.div
             key="check"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="w-6 h-6"
+            initial={{
+              opacity: 0,
+              scale: 0.5,
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.5,
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+            transition={{
+              duration: 0.05,
+              opacity: { duration: 0.15 },
+              scale: { duration: 0.15 },
+            }}
+            className="w-full h-6"
           >
             <svg
               width="24"
@@ -145,18 +226,50 @@ const StatusIndicator = () => {
         return (
           <motion.div
             key="warning"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="w-6 h-6"
+            initial={{
+              opacity: 0,
+              scale: 0.5,
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.5,
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+            transition={{
+              duration: 0.05,
+              opacity: { duration: 0.15 },
+              scale: { duration: 0.15 },
+            }}
+            className="w-full h-6"
           >
-            <svg
+            <motion.svg
               width="24"
               height="24"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              animate={{
+                x: [0, 0, -2, 2, -2, 2, 0],
+              }}
+              transition={{
+                x: {
+                  duration: 0.7,
+                  times: [0, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+                  ease: "easeInOut",
+                },
+              }}
             >
               <path
                 d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
@@ -170,7 +283,7 @@ const StatusIndicator = () => {
                 strokeLinejoin="round"
               />
               <circle cx="12" cy="16" r="1" fill="white" />
-            </svg>
+            </motion.svg>
           </motion.div>
         );
       default:
@@ -179,25 +292,37 @@ const StatusIndicator = () => {
   };
 
   return (
-    <div
+    <motion.div
       className="rounded-full py-3 px-6 inline-flex items-center gap-3 mx-auto"
       style={{
         backgroundColor: statusData[status].bgColor,
-        width: "max-content",
-        minWidth: "280px",
+      }}
+      animate={{
+        width: `auto`,
+      }}
+      transition={{
+        width: { type: "spring", stiffness: 300, damping: 30 },
       }}
     >
       {/* Icon container - animations happen inside but container stays fixed */}
-      <div className="w-6 h-6 flex items-center justify-center shrink-0">
-        <AnimatePresence initial={false} mode="wait">
+      <div className="w-6 h-6 flex items-center justify-center shrink-0 relative">
+        <AnimatePresence initial={false} mode="sync">
           {renderIcon()}
         </AnimatePresence>
       </div>
 
-      {/* Text container with fixed width to prevent layout shifts */}
-      <div className="relative min-w-[180px] h-7 flex items-center overflow-hidden">
-        <AnimatePresence initial={false} mode="wait">
-          <motion.span
+      {/* Text container with dynamic width based on content */}
+      <motion.div
+        className="relative h-7 flex items-center overflow-hidden"
+        animate={{
+          width: textWidth[status] + 10, // Add some padding
+        }}
+        transition={{
+          width: { type: "spring", stiffness: 300, damping: 30 },
+        }}
+      >
+        <AnimatePresence initial={false} mode="sync">
+          <motion.div
             key={status}
             initial={
               direction === "forward" ? "hiddenForward" : "hiddenBackward"
@@ -208,15 +333,19 @@ const StatusIndicator = () => {
             style={{ color: statusData[status].textColor }}
             className="text-lg font-medium whitespace-nowrap absolute"
             transition={{
-              duration: 0.3,
-              ease: "easeInOut",
+              type: "spring",
+              damping: 15,
+              stiffness: 200,
+              duration: 0.0,
+              delay: 0.01,
+              opacity: { duration: 0.1 },
             }}
           >
             {statusData[status].text}
-          </motion.span>
+          </motion.div>
         </AnimatePresence>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
