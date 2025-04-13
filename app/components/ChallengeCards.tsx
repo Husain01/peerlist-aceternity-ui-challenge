@@ -13,10 +13,11 @@ const challenges = [
   },
   {
     day: 2,
-    title: "Challenge 2",
-    description: "Coming soon...",
-    path: "#",
-    status: "upcoming",
+    title: "Dynamic Transaction Status Indicator",
+    description:
+      "An animated status indicator that smoothly transitions between analyzing, safe, and warning states.",
+    path: "/transaction-status",
+    status: "completed",
   },
   {
     day: 3,
