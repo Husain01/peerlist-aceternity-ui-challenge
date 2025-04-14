@@ -32,18 +32,31 @@ export default function AnimatedCheckbox({
     >
       <div className="relative w-5 h-5">
         {/* Border */}
-        <motion.div
-          className="absolute inset-0 rounded-sm border-2 border-gray-300"
+        <motion.svg
+          className="absolute inset-0 w-5 h-5"
+          viewBox="0 0 20 20"
           initial={false}
-          animate={{
-            opacity: isChecked ? 0 : 1,
-            scale: isChecked ? 1.2 : 1,
-          }}
-          transition={{
-            duration: 0.2,
-            scale: { type: "spring", stiffness: 300, damping: 25 },
-          }}
-        />
+        >
+          <motion.path
+            d="M 18 10 L 18 18 L 2 18 L 2 2 L 18 2 L 18 10"
+            fill="none"
+            stroke="#D1D5DB"
+            strokeWidth="2"
+            strokeLinecap="round"
+            initial={{
+              pathLength: 1,
+              pathOffset: 0,
+            }}
+            animate={{
+              pathLength: isChecked ? 0 : 1,
+              pathOffset: isChecked ? 1 : 0,
+            }}
+            transition={{
+              duration: 0.4,
+              ease: "linear",
+            }}
+          />
+        </motion.svg>
 
         {/* Background */}
         <motion.div
@@ -55,6 +68,7 @@ export default function AnimatedCheckbox({
           }}
           transition={{
             duration: 0.2,
+            delay: 0.35,
             scale: { type: "spring", stiffness: 300, damping: 25 },
             opacity: { duration: 0.2 },
           }}
@@ -71,7 +85,7 @@ export default function AnimatedCheckbox({
           }}
           transition={{
             duration: 0.2,
-            delay: 0.1,
+            delay: 0.5,
             scale: { type: "spring", stiffness: 300, damping: 25 },
           }}
         >
@@ -84,23 +98,34 @@ export default function AnimatedCheckbox({
             strokeLinejoin="round"
             initial={{ pathLength: 0 }}
             animate={{ pathLength: isChecked ? 1 : 0 }}
-            transition={{ duration: 0.2, delay: 0.2 }}
+            transition={{ duration: 0.2, delay: 0.5 }}
           />
         </motion.svg>
       </div>
 
-      {/* Label */}
-      <motion.span
-        className="text-gray-700 text-lg"
-        initial={false}
-        animate={{
-          textDecoration: isChecked ? "line-through" : "none",
-          opacity: isChecked ? 0.5 : 1,
-        }}
-        transition={{ duration: 0.2 }}
-      >
-        {label}
-      </motion.span>
+      {/* Label with strikethrough */}
+      <div className="relative inline-flex items-center">
+        <span className="text-gray-700 text-lg">{label}</span>
+        <motion.div
+          className="absolute inset-0 overflow-hidden"
+          initial={false}
+          animate={{
+            opacity: isChecked ? 1 : 0,
+          }}
+          transition={{ duration: 0.2 }}
+        >
+          <motion.div
+            className="w-full h-[1px] bg-gray-700 absolute top-1/2"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: isChecked ? 1 : 0 }}
+            style={{ originX: 0 }}
+            transition={{
+              duration: 0.2,
+              delay: 0.5,
+            }}
+          />
+        </motion.div>
+      </div>
     </div>
   );
 }
