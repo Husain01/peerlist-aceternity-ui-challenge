@@ -29,10 +29,11 @@ const challenges = [
   },
   {
     day: 4,
-    title: "Challenge 4",
-    description: "Coming soon...",
-    path: "#",
-    status: "upcoming",
+    title: "Pricing Tabs",
+    description:
+      "A tab component with nested tabs for switching between free and premium pricing options.",
+    path: "/pricing-tabs",
+    status: "completed",
   },
   {
     day: 5,
