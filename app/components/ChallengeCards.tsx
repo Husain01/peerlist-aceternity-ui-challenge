@@ -21,10 +21,11 @@ const challenges = [
   },
   {
     day: 3,
-    title: "Challenge 3",
-    description: "Coming soon...",
-    path: "#",
-    status: "upcoming",
+    title: "Animated Checkbox",
+    description:
+      "A beautiful checkbox with smooth transitions, including circular fade-out, background scaling, and text strikethrough.",
+    path: "/animated-checkbox",
+    status: "completed",
   },
   {
     day: 4,
